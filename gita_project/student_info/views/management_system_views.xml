@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="student_information_view_tree" model="ir.ui.view">
+            <field name="name">student_information_view_tree</field>
+            <field name="model">student.information</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="first_name_student"/>
+                    <field name="roll_number_student"/>
+                    <field name="grade_student"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="student_information_view_form" model="ir.ui.view">
+            <field name="name">student_information_view_form</field>
+            <field name="model">student.information</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="id_number"/>
+                            <field name="gender"/>
+                            <field name="birth_date"/>
+                            <field name="image"/>
+                            <field name="grade_student"/>
+                            <field name="parent_name"/>
+                            <field name="mobile"/>
+                            <field name="address"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="student_information_kanban_view" model="ir.ui.view">
+            <field name="name">student_information_kanban_view</field>
+            <field name="model">student.information</field>
+            <field name="arch" type="xml">
+                <kanban sample="1">
+                    <field name="id"/>
+                    <field name="image"/>
+                    <field name="name"/>
+                    <field name="grade_student"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                                <div class="o_kanban_image_fill_left d-none d-md-block o_kanban_image_full">
+                                    <field name="image" widget="image" options='{"size": [170, 170]}'  class="bg-view"/>
+                                </div>
+                                <div class="o_kanban_image d-md-none d-block o_kanban_image_full">
+                                    <field name="image" widget="image" options='{"size": [170, 170]}'  class="bg-view"/>
+                                </div>
+
+                                <div class="oe_kanban_details d-flex flex-column justify-content-between">
+                                    <div>
+                                        <!--                                        <strong class="o_kanban_record_title oe_partner_heading"><field name="name"/></strong>-->
+                                        <div class="o_kanban_tags_section oe_kanban_partner_categories"/>
+                                        <ul>
+                                            <li class="list-group-item" style="text-decoration-line: overline; text-decoration-color: red; font-size: 20px;"><strong><field name="name"/></strong></li>
+                                            <li class="o_offcanvas_menu_toggler order-first navbar-toggler text-end border-0 o_not_editable" style="color: red; background-color: gray; padding: 20px;"><strong><field name="mobile"/></strong></li>
+                                            <li class="o_offcanvas_menu_toggler order-first navbar-toggler text-end border-0 o_not_editable" style="color: red; background-color: gray; padding: 20px;"><strong><field name="address"/></strong></li>
+                                            <li class="o_offcanvas_menu_toggler order-first navbar-toggler text-end border-0 o_not_editable" style="color: red; background-color: gray; padding: 20px;"><strong><field name="roll_number_student"/></strong></li>
+                                        </ul>
+                                    </div>
+                                    <div class="o_kanban_record_bottom">
+                                        <div class="oe_kanban_bottom_left"/>
+                                        <div class="oe_kanban_bottom_right"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="action_student_info_view" model="ir.actions.act_window">
+            <field name="name">student info</field>
+            <field name="res_model">student.information</field>
+            <field name="view_mode">tree,form,kanban</field>
+        </record>
+
+        <menuitem id="student_info_top_menu"
+                  name="Student Management System"
+                  sequence="0"
+        />
+
+        <menuitem id="student_info"
+                  name="ყველა სტუდენტის ნახვა"
+                  parent="student_info_top_menu"
+                  action="action_student_info_view"
+                  sequence="1" />
+
+        <record id="add_student_view_form" model="ir.ui.view">
+            <field name="name">add_student_view_form</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <div>
+                                    <div class="img">
+                                        <field name="image" widget="image" class="rounded-lg w-auto h-auto" />
+                                    </div>
+                                    <h2> <field name="full_name" placeholder="სრული სახელი" /></h2>
+                                </div>
+                                <separator string="INFO"/>
+                                <group>
+                                    <field name="id_number"/>
+                                    <field name="roll_number"/>
+                                    <field name="grade_student"/>
+                                </group>
+                            </group>
+                            <group col="1">
+                                <separator string="Student Detail"/>
+                                <group>
+                                    <field name="name" required="1"/>
+                                    <field name="last_name" required="1"/>
+                                    <field name="birth_date"/>
+                                    <field name="gender"/>
+                                </group>
+
+                                <separator string="Contact Detail"/>
+                                <group>
+                                    <!--                                    <field name="parent_name"/>-->
+                                    <field name="mobile"/>
+                                    <field name="address"/>
+                                </group>
+                                <group>
+                                    <button name="addstud" string="სტუდენტის დამატება" type="object"/>
+                                    <button name="report" string="ფაილის გენერირება" type="object"/>
+                                </group>
+
+                                <field name="files" widget="many2many_binary" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_add_student_view" model="ir.actions.act_window">
+            <field name="name">add student</field>
+            <field name="res_model">res.partner</field>
+            <!--            <field name="view_mode">form</field>-->
+            <field name="view_id" ref="add_student_view_form"/>
+        </record>
+
+        <menuitem id="add_student"
+                  name="ახალი სტუდენტის დამატება"
+                  parent="student_info_top_menu"
+                  action="action_add_student_view"
+                  sequence="2" />
+
+        <record id="search_student_view_form" model="ir.ui.view">
+            <field name="name">search_student_view_form</field>
+            <field name="model">search.student</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="student_roll_number"/>
+                                <button name="studentsearch" string="სტუდენტის ძებნა" type="object"/>
+                            </group>
+                            <field name="student_list">
+                                <tree editable="bottom">
+                                    <field name="first_name_student" readonly="True"/>
+                                    <field name="roll_number_student" readonly="True"/>
+                                    <field name="grade_student"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="search_student_info_view" model="ir.actions.act_window">
+            <field name="name">search student</field>
+            <field name="res_model">search.student</field>
+            <field name="view_mode">form</field>
+        </record>
+
+        <menuitem id="search_student"
+                  name="სტუდენტის ძებნა ნომრის მიხედვით"
+                  parent="student_info_top_menu"
+                  action="search_student_info_view"
+                  sequence="3" />
+    </data>
+</odoo>
