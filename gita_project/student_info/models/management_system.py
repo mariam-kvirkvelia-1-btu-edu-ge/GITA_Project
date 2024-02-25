@@ -28,21 +28,7 @@ class StudentInformation(models.Model):
     grade_student = fields.Selection(selection=[('a', 'A'),('b', 'B'),('c', 'C'),('d', 'D'),('e', 'E'),('fx', 'FX')], string='შეფასება')
 
     excel_file = fields.Binary(string='დაგენერირებული ფაილი', attachment=True)
-
-    def report(self):
-
-        results = eval('self.generate_report')
-        self.write({'excel_file': 'excel_file', 'excel_filename': 'filename'})
-        attachment = self.env['ir.attachment'].create({
-            'datas': results.get('excel_file'),
-            'name': results.get('filename'),
-            'datas_fname': results.get('filename'),
-            'type': 'binary',
-        })
-        generated_report_values = {
-            'file': [(4, attachment.id)],
-        }
-        # self.env['student.generate.report'].create(generated_report_values)
+    
 
     @api.depends('first_name_student', 'last_name_student')
     def compute_full_name(self):
@@ -139,20 +125,20 @@ class AddStudent(models.Model):
             sheet.write_row(rowcount, 0, rec)
             rowcount += 1
 
-        book.close()
-        output.seek(0)
-        excel_file = base64.b64encode(output.getvalue())
+        book.close() # book close() მეთოდი გამოიყენება Excel ფაილის დასასრულებლად
+        output.seek(0) # ის ეძებს outputის ნაკადის დასაწყისს. `output.seek(0)` უზრუნველყოფს ნაკადის მთლიანი შინაარსის სწორად დაშიფვრას base64 ფორმატში.
+        excel_file = base64.b64encode(output.getvalue()) # შიფრავს Excel ფაილის შიგთავსს, რომელიც ინახება `output` ცვლადში base64 ფორმატში. `output.getvalue()` ამოიღებს `output` ცვლადში შენახულ შინაარსს.
         return {
             'excel_file': excel_file,
             'filename': f'{self.name}_{self.last_name}.xlsx',
-        }
+        }  #  აბრუნებს ლექსიკონს, რომელიც შეიცავს base64-ით დაშიფრულ Excel ფაილს (`excel_file`) და ფაილის სახელს.
 
     def report(self):
 
         results = self.generate_report()
 
 
-        attachment = self.env['ir.attachment'].create({   # attachment ფაილის შექმნა
+        attachment = self.env['ir.attachment'].create({  # generate_report()-დან მიღებული შედეგების გამოყენებით იქმნება ახალი ჩანაწერი `ir.attachment` ტიპის.
             'datas': results.get('excel_file'),
             'name': results.get('filename'),
             'mimetype': 'application/vnd.ms-excel'
